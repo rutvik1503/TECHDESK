@@ -15,7 +15,7 @@ import ExpenseDataAdd from "./Expense/ExpenseDataAdd.jsx";
 import IncomeDataShow from "./Income/IncomeDataShow.jsx";
 import IncomeDataAdd from "./Income/IncomeDataAdd.jsx";
 import EmployeeCard from "./Employee/EmoployeeCard.jsx";
-import ClientCard from "./Client/ClientcARD.JSX";
+import ClientCard from './Client/ClientCard.jsx'
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
