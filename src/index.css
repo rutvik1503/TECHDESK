@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Bebas_Neue";
+  src: url(/public/Bebas_Neue/BebasNeue-Regular.ttf);
+}
+
+@font-face {
+  font-family: "Jost";
+  src: url(/public/Jost/static/Jost-Regular.ttf);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-image: url(/public/Bg.jpg);
+  background-position: center;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.CapitalFont {
+  font-family: "Bebas_Neue", sans-serif;
+}
+
+.SmallFont {
+  font-family: "Jost", sans-serif;
+}
+
+/* For a specific element */
+.element {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.bg {
+  background: radial-gradient(at center, #1a191b, #0d0d11);
+}
+
+.sidebar {
+  height: 100%;
+  width: 100%;
+  border-radius: 20px;
+  padding: 1.25rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2.5rem;
+
+  background-color: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.navbar {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 1.25rem;
+  position: relative;
+
+  border-radius: 17.5px;
+  background-color: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.glass-card {
+  padding: 1.25rem;
+
+  background-color: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(10px);
+
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* One class to reset number, date, time, textarea default UI */
+.no-default[type="number"]::-webkit-inner-spin-button,
+.no-default[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.no-default[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.no-default[type="date"]::-webkit-calendar-picker-indicator,
+.no-default[type="time"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.no-default[type="date"],
+.no-default[type="time"] {
+  -moz-appearance: textfield;
+}
+
+.no-default textarea {
+  resize: none;
+}
+
+.client-notes::-webkit-scrollbar {
+  display: none;
+}
+
+.white-date-icon {
+  appearance: none;
+  -webkit-appearance: none; /* Chrome, Safari */
+  -moz-appearance: none; /* Firefox */
+  background: transparent url('/public/Icons/Date.png') no-repeat right 0.75rem center;
+  background-size: 1.5rem auto; /* icon size */
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
+  height: 40px;
+  padding: 0 1rem; /* space for icon */
+  color: white;
+  cursor: pointer;
+}
+
+/* Remove Firefox inner spin button and calendar icon */
+input[type="date"]::-moz-calendar-picker-indicator {
+  display: none;
+}
+
+/* Remove Chrome/Safari default calendar icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  cursor: pointer;
+}
+
