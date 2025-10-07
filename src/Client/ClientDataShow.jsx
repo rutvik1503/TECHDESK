@@ -6,7 +6,6 @@ import { database } from "../../Firebase/Firebase";
 const ClientDataShow = () => {
   const navigate = useNavigate();
   const [clients, setClients] = useState([]);
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -19,8 +18,11 @@ const ClientDataShow = () => {
           ...doc.data(),
         }));
 
-        // Initial sort by name
-        clientList.sort((a, b) => (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase()));
+        // Always sort by name ascending (A → Z)
+        clientList.sort((a, b) =>
+          (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase())
+        );
+
         setClients(clientList);
       } catch (error) {
         console.error("Error fetching client data:", error);
@@ -29,17 +31,6 @@ const ClientDataShow = () => {
 
     fetchClientData();
   }, []);
-
-  const sortByName = () => {
-    const sorted = [...clients].sort((a, b) => {
-      const nameA = (a.name || "").toLowerCase();
-      const nameB = (b.name || "").toLowerCase();
-      return sortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
-    });
-
-    setClients(sorted);
-    setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // toggle order
-  };
 
   return (
     <div className="flex flex-col gap-[20px]">
@@ -56,31 +47,16 @@ const ClientDataShow = () => {
         </button>
       </div>
 
-      <div className="">
+      <div>
         <table className="glass-card rounded-[10px] shadow-lg overflow-hidden w-full border-collapse SmallFont">
           <thead>
             <tr className="bg-gradient-to-r from-[#1966FF] to-[#01a8c9] text-white">
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] w-[60px]">
-                No
-              </th>
-              <th
-                onClick={sortByName}
-                className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] cursor-pointer select-none"
-              >
-                Name {sortOrder === "asc" ? "▲" : "▼"}
-              </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
-                Email
-              </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
-                Phone
-              </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
-                Main Service
-              </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
-                Action
-              </th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] w-[60px]">No</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Name</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Email</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Phone</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Main Service</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -88,25 +64,13 @@ const ClientDataShow = () => {
               clients.map((client, index) => (
                 <tr
                   key={client.id}
-                  className={`transition ${
-                    index % 2 === 0 ? "bg-white/1" : "bg-white/3"
-                  } hover:bg-[#1a2533]/60`}
+                  className={`transition ${index % 2 === 0 ? "bg-white/1" : "bg-white/3"} hover:bg-[#1a2533]/60`}
                 >
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
-                    {index + 1}
-                  </td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
-                    {client.name || "N/A"}
-                  </td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
-                    {client.email || "N/A"}
-                  </td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
-                    {client.phone || "N/A"}
-                  </td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
-                    {client.mainService || "N/A"}
-                  </td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{index + 1}</td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{client.name || "N/A"}</td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{client.email || "N/A"}</td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{client.phone || "N/A"}</td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{client.mainService || "N/A"}</td>
                   <td className="p-4 text-center">
                     <button
                       onClick={() => navigate(`/clientcard/${client.id}`)}
@@ -119,9 +83,7 @@ const ClientDataShow = () => {
               ))
             ) : (
               <tr>
-                <td className="p-6 text-center text-gray-400" colSpan="6">
-                  No Clients Found
-                </td>
+                <td className="p-6 text-center text-gray-400" colSpan="6">No Clients Found</td>
               </tr>
             )}
           </tbody>
