@@ -6,6 +6,7 @@ import { database } from "../../Firebase/Firebase";
 const ClientDataShow = () => {
   const navigate = useNavigate();
   const [clients, setClients] = useState([]);
+  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' or 'desc'
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -18,6 +19,8 @@ const ClientDataShow = () => {
           ...doc.data(),
         }));
 
+        // Initial sort by name
+        clientList.sort((a, b) => (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase()));
         setClients(clientList);
       } catch (error) {
         console.error("Error fetching client data:", error);
@@ -26,6 +29,17 @@ const ClientDataShow = () => {
 
     fetchClientData();
   }, []);
+
+  const sortByName = () => {
+    const sorted = [...clients].sort((a, b) => {
+      const nameA = (a.name || "").toLowerCase();
+      const nameB = (b.name || "").toLowerCase();
+      return sortOrder === "asc" ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+    });
+
+    setClients(sorted);
+    setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // toggle order
+  };
 
   return (
     <div className="flex flex-col gap-[20px]">
@@ -49,8 +63,11 @@ const ClientDataShow = () => {
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] w-[60px]">
                 No
               </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
-                Name
+              <th
+                onClick={sortByName}
+                className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] cursor-pointer select-none"
+              >
+                Name {sortOrder === "asc" ? "▲" : "▼"}
               </th>
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
                 Email

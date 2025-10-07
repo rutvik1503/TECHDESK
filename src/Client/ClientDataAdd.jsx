@@ -137,7 +137,10 @@ const ClientDataAdd = () => {
         clientRef = doc(database, "ClientData", id);
         await updateDoc(clientRef, clientData);
       } else {
-        clientRef = await addDoc(collection(database, "ClientData"), clientData);
+        clientRef = await addDoc(
+          collection(database, "ClientData"),
+          clientData
+        );
 
         if (clientPaidAmount > 0) {
           await addDoc(collection(database, "IncomeData"), {
@@ -200,7 +203,9 @@ const ClientDataAdd = () => {
 
         {/* Phone */}
         <div className="glass-card rounded-[15px] flex flex-col gap-[5px]">
-          <label className="text-[17.5px] font-[500] tracking-[1px]">Phone</label>
+          <label className="text-[17.5px] font-[500] tracking-[1px]">
+            Phone
+          </label>
           <input
             type="tel"
             value={clientPhone}
@@ -227,7 +232,9 @@ const ClientDataAdd = () => {
 
         {/* Address */}
         <div className="glass-card rounded-[15px] flex flex-col gap-[5px] col-span-2">
-          <label className="text-[17.5px] font-[500] tracking-[1px]">Address</label>
+          <label className="text-[17.5px] font-[500] tracking-[1px]">
+            Address
+          </label>
           <textarea
             value={clientAddress}
             onChange={(e) => setClientAddress(e.target.value)}
@@ -238,7 +245,9 @@ const ClientDataAdd = () => {
 
         {/* Main Service */}
         <div className="glass-card rounded-[15px] flex flex-col gap-[5px] col-span-2">
-          <label className="text-[16px] font-[500] tracking-[0.5px]">Main Service*</label>
+          <label className="text-[16px] font-[500] tracking-[0.5px]">
+            Main Service*
+          </label>
           <select
             value={clientMainService}
             onChange={(e) => {
@@ -248,9 +257,17 @@ const ClientDataAdd = () => {
             }}
             className="w-full rounded-[12px] px-4 py-2 text-[14px] bg-white/10 backdrop-blur-md border border-white/20 text-white appearance-none cursor-pointer transition-all duration-300 hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            <option value="" disabled>Select main service</option>
+            <option value="" disabled>
+              Select main service
+            </option>
             {Object.keys(services).map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option
+                className="bg-[#0a0a0a]/70 text-white backdrop-blur-lg hover:bg-[#1a1a1a]/70 focus:bg-gradient-to-r focus:from-[#1966FF] focus:to-[#00D4FF]"
+                key={s}
+                value={s}
+              >
+                {s}
+              </option>
             ))}
           </select>
         </div>
@@ -258,7 +275,9 @@ const ClientDataAdd = () => {
         {/* Sub Services */}
         {clientMainService && (
           <div className="glass-card rounded-[15px] flex flex-col gap-[5px] col-span-2 p-4">
-            <label className="text-[16px] font-[500] tracking-[0.75px]">Sub Services*</label>
+            <label className="text-[16px] font-[500] tracking-[0.75px]">
+              Sub Services*
+            </label>
             <div className="flex flex-wrap gap-2 mt-1">
               {services[clientMainService].map((sub) => (
                 <button
@@ -285,7 +304,9 @@ const ClientDataAdd = () => {
         {/* Assigned Employees */}
         {clientService.length > 0 && (
           <div className="glass-card rounded-[15px] flex flex-col gap-[5px] col-span-2 p-4">
-            <label className="text-[16px] font-[500] tracking-[0.75px]">Assign Employees</label>
+            <label className="text-[16px] font-[500] tracking-[0.75px]">
+              Assign Employees
+            </label>
             {filteredEmployees.length > 0 ? (
               <div className="flex flex-wrap gap-2 mt-1">
                 {filteredEmployees.map((emp) => (
@@ -294,7 +315,9 @@ const ClientDataAdd = () => {
                     type="button"
                     onClick={() =>
                       assignedEmployee.includes(emp.id)
-                        ? setAssignedEmployee(assignedEmployee.filter((e) => e !== emp.id))
+                        ? setAssignedEmployee(
+                            assignedEmployee.filter((e) => e !== emp.id)
+                          )
                         : setAssignedEmployee([...assignedEmployee, emp.id])
                     }
                     className={`px-3 h-[40px] rounded-[8px] text-[12px] transition ${
@@ -317,7 +340,9 @@ const ClientDataAdd = () => {
 
         {/* Total Payment */}
         <div className="glass-card rounded-[15px] flex flex-col gap-[5px]">
-          <label className="text-[16px] font-[500] tracking-[0.5px]">Total Payment</label>
+          <label className="text-[16px] font-[500] tracking-[0.5px]">
+            Total Payment
+          </label>
           <input
             type="number"
             value={clientTotalPayment}
@@ -329,7 +354,9 @@ const ClientDataAdd = () => {
 
         {/* Paid Amount */}
         <div className="glass-card rounded-[15px] flex flex-col gap-[5px]">
-          <label className="text-[16px] font-[500] tracking-[0.5px]">Paid Amount</label>
+          <label className="text-[16px] font-[500] tracking-[0.5px]">
+            Paid Amount
+          </label>
           <input
             type="number"
             value={clientPaidAmount}
@@ -341,7 +368,9 @@ const ClientDataAdd = () => {
 
         {/* Notes */}
         <div className="glass-card rounded-[15px] flex flex-col gap-[5px] col-span-2">
-          <label className="text-[16px] font-[500] tracking-[0.5px]">Notes</label>
+          <label className="text-[16px] font-[500] tracking-[0.5px]">
+            Notes
+          </label>
           <textarea
             value={clientNote}
             onChange={(e) => setClientNote(e.target.value)}

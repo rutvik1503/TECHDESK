@@ -167,7 +167,7 @@ const IncomeDataAdd = () => {
             >
               <option value="" disabled>Select Client</option>
               {clients.map((client) => (
-                <option className="bg-[rgba(50,50,50,0.9)] text-white hover:bg-blue-500" key={client.id} value={client.name}>
+                <option className="bg-[#0a0a0a]/70 text-white backdrop-blur-lg hover:bg-[#1a1a1a]/70 focus:bg-gradient-to-r focus:from-[#1966FF] focus:to-[#00D4FF]" key={client.id} value={client.name}>
                   {client.name}
                 </option>
               ))}

@@ -234,7 +234,7 @@ const EmployeeDataAdd = () => {
                 <option
                   key={dept}
                   value={dept}
-                  className="bg-[rgba(50,50,50,0.9)] text-white hover:bg-blue-500"
+                  className="bg-[#0a0a0a]/70 text-white backdrop-blur-lg hover:bg-[#1a1a1a]/70 focus:bg-gradient-to-r focus:from-[#1966FF] focus:to-[#00D4FF]"
                 >
                   {dept}
                 </option>

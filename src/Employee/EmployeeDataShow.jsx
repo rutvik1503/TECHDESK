@@ -13,10 +13,17 @@ const EmployeeDataShow = () => {
         const employeeCollection = collection(database, "EmployeeData");
         const snapshot = await getDocs(employeeCollection);
 
-        const employeeList = snapshot.docs.map((doc) => ({
+        let employeeList = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
+
+        // Sort employees by name A-Z
+        employeeList.sort((a, b) => {
+          const nameA = (a.name || "").toLowerCase();
+          const nameB = (b.name || "").toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
 
         setEmployees(employeeList);
       } catch (error) {
@@ -46,19 +53,19 @@ const EmployeeDataShow = () => {
         <table className="glass-card rounded-[10px] shadow-lg overflow-hidden w-full border-collapse SmallFont">
           <thead>
             <tr className="bg-gradient-to-r from-[#1966FF] to-[#01a8c9] text-white">
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase  font-[500] w-[60px]">
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] w-[60px]">
                 No
               </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase  font-[500]">
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
                 Name
               </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase  font-[500]">
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
                 Email
               </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase  font-[500]">
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
                 Department
               </th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase  font-[500]">
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
                 Action
               </th>
             </tr>
@@ -72,7 +79,6 @@ const EmployeeDataShow = () => {
                     index % 2 === 0 ? "bg-white/1" : "bg-white/3"
                   } hover:bg-[#1a2533]/60`}
                 >
-                  {/* ✅ Serial Number */}
                   <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
                     {index + 1}
                   </td>

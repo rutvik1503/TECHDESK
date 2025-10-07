@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, getDoc, collection, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
 
 const EmployeeCard = () => {
@@ -11,44 +11,29 @@ const EmployeeCard = () => {
   const [expenses, setExpenses] = useState([]);
 
   // Utility functions
-  const formatSalary = (amount) => {
-    if (!amount) return "N/A";
-    return `₹ ${new Intl.NumberFormat("en-IN").format(amount)}`;
-  };
+  const formatSalary = (amount) => (amount ? `₹ ${new Intl.NumberFormat("en-IN").format(amount)}` : "N/A");
+  const formatDate = (date) => (date ? new Date(date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "N/A");
 
-  const formatDate = (date) => {
-    if (!date) return "N/A";
-    return new Date(date).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
+  // Fetch employee and assigned clients
   useEffect(() => {
-    // Fetch Employee details
     const fetchEmployee = async () => {
       try {
-        const docRef = doc(database, "EmployeeData", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists())
-          setEmployee({ id: docSnap.id, ...docSnap.data() });
-      } catch (error) {
-        console.error("Error fetching employee:", error);
+        const docSnap = await getDoc(doc(database, "EmployeeData", id));
+        if (docSnap.exists()) setEmployee({ id: docSnap.id, ...docSnap.data() });
+      } catch (err) {
+        console.error("Error fetching employee:", err);
       }
     };
 
-    // Fetch Clients assigned to this employee
     const fetchClients = async () => {
       try {
-        const clientCollection = collection(database, "ClientData");
-        const snapshot = await getDocs(clientCollection);
+        const snapshot = await getDocs(collection(database, "ClientData"));
         const assignedClients = snapshot.docs
           .map((doc) => ({ id: doc.id, ...doc.data() }))
           .filter((client) => client.assignedEmployees?.includes(id));
         setClients(assignedClients);
-      } catch (error) {
-        console.error("Error fetching clients:", error);
+      } catch (err) {
+        console.error("Error fetching clients:", err);
       }
     };
 
@@ -56,7 +41,7 @@ const EmployeeCard = () => {
     fetchClients();
   }, [id]);
 
-  // Fetch Expenses for this employee
+  // Fetch expenses
   useEffect(() => {
     if (!employee) return;
     const fetchExpenses = async () => {
@@ -75,11 +60,7 @@ const EmployeeCard = () => {
   }, [employee]);
 
   if (!employee) {
-    return (
-      <div className="flex justify-center items-center h-screen text-gray-400">
-        Loading employee details...
-      </div>
-    );
+    return <div className="flex justify-center items-center h-screen text-gray-400">Loading employee details...</div>;
   }
 
   const departmentColor = (dept) => {
@@ -95,6 +76,42 @@ const EmployeeCard = () => {
     }
   };
 
+  // Delete employee function
+  const handleDeleteEmployee = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this employee? All related expenses will also be deleted."
+    );
+    if (!confirmDelete) return;
+
+    try {
+      // Delete related expenses
+      const expensesSnapshot = await getDocs(collection(database, "ExpenseData"));
+      const deleteExpensePromises = expensesSnapshot.docs
+        .filter((doc) => doc.data().employeeName === employee.name)
+        .map((doc) => deleteDoc(doc.ref));
+
+      // Remove employee from clients
+      const clientsSnapshot = await getDocs(collection(database, "ClientData"));
+      const updateClientsPromises = clientsSnapshot.docs
+        .filter(doc => doc.data().assignedEmployees?.includes(employee.id))
+        .map(doc => {
+          const clientRef = doc.ref;
+          const updatedEmployees = doc.data().assignedEmployees.filter(eId => eId !== employee.id);
+          return updateDoc(clientRef, { assignedEmployees: updatedEmployees });
+        });
+
+      // Delete employee
+      await Promise.all([...deleteExpensePromises, ...updateClientsPromises]);
+      await deleteDoc(doc(database, "EmployeeData", employee.id));
+
+      alert("Employee deleted successfully!");
+      navigate("/employee");
+    } catch (err) {
+      console.error("Error deleting employee:", err);
+      alert("Failed to delete employee. Please try again.");
+    }
+  };
+
   return (
     <div className="w-full flex flex-col gap-6 p-4 SmallFont">
       {/* Header */}
@@ -106,20 +123,26 @@ const EmployeeCard = () => {
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-[500] text-white">{employee.name}</h1>
             <span
-              className={`px-4 py-1 rounded-full text-sm font-[500] text-white ${departmentColor(
-                employee.department
-              )}`}
+              className={`px-4 py-1 rounded-full text-sm font-[500] text-white ${departmentColor(employee.department)}`}
             >
               {employee.department || "N/A"}
             </span>
           </div>
         </div>
-        <button
-          onClick={() => navigate(`/addemployee/${id}`)}
-          className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-[500] shadow-lg hover:shadow-xl transition-all duration-300"
-        >
-          Edit
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => navigate(`/addemployee/${id}`)}
+            className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-[500] shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Edit
+          </button>
+          <button
+            onClick={handleDeleteEmployee}
+            className="px-6 py-2 rounded-lg bg-red-600 text-white font-[500] shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            Delete
+          </button>
+        </div>
       </div>
 
       {/* Employee Details */}
@@ -131,46 +154,28 @@ const EmployeeCard = () => {
           { label: "Salary", value: formatSalary(employee.salary) },
           { label: "Joining Date", value: formatDate(employee.dateOfJoin) },
         ].map((field, idx) => (
-          <div
-            key={idx}
-            className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all flex flex-col"
-          >
-            <span className="text-gray-300 font-medium text-[14px] mb-1">
-              {field.label}
-            </span>
-            <span className="text-white text-[15px] font-[500]">
-              {field.value || "N/A"}
-            </span>
+          <div key={idx} className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all flex flex-col">
+            <span className="text-gray-300 font-medium text-[14px] mb-1">{field.label}</span>
+            <span className="text-white text-[15px] font-[500]">{field.value || "N/A"}</span>
           </div>
         ))}
 
         {/* Assigned Clients */}
         <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all flex flex-col">
-          <span className="text-gray-300 font-medium text-[14px] mb-1">
-            Assigned Clients
-          </span>
+          <span className="text-gray-300 font-medium text-[14px] mb-1">Assigned Clients</span>
           {clients.length > 0 ? (
             clients.map((client) => (
-              <span
-                key={client.id}
-                className="text-white text-[15px] font-[500]"
-              >
-                {client.name}
-              </span>
+              <span key={client.id} className="text-white text-[15px] font-[500]">{client.name}</span>
             ))
           ) : (
-            <span className="text-white/60 text-[15px] font-[500]">
-              No Clients
-            </span>
+            <span className="text-white/60 text-[15px] font-[500]">No Clients</span>
           )}
         </div>
       </div>
 
       {/* Expense History */}
       <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all">
-        <span className="text-gray-300 font-medium text-[14px] mb-2">
-          Expense History
-        </span>
+        <span className="text-gray-300 font-medium text-[14px] mb-2">Expense History</span>
         <div className="overflow-x-auto rounded-[12.5px] mt-[15px]">
           <table className="w-full border-collapse SmallFont">
             <thead>
@@ -184,33 +189,16 @@ const EmployeeCard = () => {
             <tbody>
               {expenses.length > 0 ? (
                 expenses.map((expense, index) => (
-                  <tr
-                    key={expense.id}
-                    className={index % 2 === 0 ? "bg-white/5" : "bg-white/10"}
-                  >
-                    <td className="p-3 text-white text-[13px] text-center">
-                      {index + 1}
-                    </td>
-                    <td className="p-3 text-white text-[13px] text-center">
-                      {formatDate(expense.date)}
-                    </td>
-                    <td className="p-3 text-white text-[13px] text-center">
-                      {expense.amount
-                        ? `₹ ${new Intl.NumberFormat("en-IN").format(
-                            expense.amount
-                          )}`
-                        : "₹ 0"}
-                    </td>
-                    <td className="p-3 text-white text-[13px] text-center">
-                      {expense.description || "N/A"}
-                    </td>
+                  <tr key={expense.id} className={index % 2 === 0 ? "bg-white/5" : "bg-white/10"}>
+                    <td className="p-3 text-white text-[13px] text-center">{index + 1}</td>
+                    <td className="p-3 text-white text-[13px] text-center">{formatDate(expense.date)}</td>
+                    <td className="p-3 text-white text-[13px] text-center">{expense.amount ? `₹ ${new Intl.NumberFormat("en-IN").format(expense.amount)}` : "₹ 0"}</td>
+                    <td className="p-3 text-white text-[13px] text-center">{expense.description || "N/A"}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="p-3 text-center text-gray-400">
-                    No Expenses Found
-                  </td>
+                  <td colSpan="4" className="p-3 text-center text-gray-400">No Expenses Found</td>
                 </tr>
               )}
             </tbody>
