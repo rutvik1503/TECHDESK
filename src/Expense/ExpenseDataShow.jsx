@@ -33,7 +33,14 @@ const ExpenseDataShow = () => {
           ...doc.data(),
         }));
 
-        setExpenses(expenseList);
+        // Sort by date descending (latest first)
+        const sortedList = expenseList.sort((a, b) => {
+          const dateA = a.date ? new Date(a.date) : new Date(0);
+          const dateB = b.date ? new Date(b.date) : new Date(0);
+          return dateB - dateA;
+        });
+
+        setExpenses(sortedList);
       } catch (error) {
         console.error("Error fetching expense data:", error);
       }

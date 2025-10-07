@@ -33,7 +33,14 @@ const IncomeDataShow = () => {
           ...doc.data(),
         }));
 
-        setIncomes(incomeList);
+        // Sort by date descending (latest first)
+        const sortedList = incomeList.sort((a, b) => {
+          const dateA = a.date ? new Date(a.date) : new Date(0);
+          const dateB = b.date ? new Date(b.date) : new Date(0);
+          return dateB - dateA;
+        });
+
+        setIncomes(sortedList);
       } catch (error) {
         console.error("Error fetching income data:", error);
       }
@@ -72,11 +79,21 @@ const IncomeDataShow = () => {
         <table className="glass-card rounded-[10px] shadow-lg overflow-hidden w-full border-collapse SmallFont">
           <thead>
             <tr className="bg-gradient-to-r from-green-400 to-green-600 text-white">
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] w-[60px]">No</th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Client Name</th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Amount</th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Date</th>
-              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Action</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500] w-[60px]">
+                No
+              </th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
+                Client Name
+              </th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
+                Amount
+              </th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
+                Date
+              </th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -84,12 +101,22 @@ const IncomeDataShow = () => {
               incomes.map((inc, index) => (
                 <tr
                   key={inc.id}
-                  className={`transition ${index % 2 === 0 ? "bg-white/1" : "bg-white/3"} hover:bg-green-900/40`}
+                  className={`transition ${
+                    index % 2 === 0 ? "bg-white/1" : "bg-white/3"
+                  } hover:bg-green-900/40`}
                 >
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{index + 1}</td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{inc.clientName || "N/A"}</td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{formatAmount(inc.amount)}</td>
-                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{formatDate(inc.date)}</td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
+                    {index + 1}
+                  </td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
+                    {inc.clientName || "N/A"}
+                  </td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
+                    {formatAmount(inc.amount)}
+                  </td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
+                    {formatDate(inc.date)}
+                  </td>
                   <td className="p-4 text-center flex justify-center gap-2">
                     <button
                       onClick={() => navigate(`/addincome/${inc.id}`)}
@@ -108,7 +135,9 @@ const IncomeDataShow = () => {
               ))
             ) : (
               <tr>
-                <td className="p-6 text-center text-gray-400" colSpan="5">No Income Data Found</td>
+                <td className="p-6 text-center text-gray-400" colSpan="5">
+                  No Income Data Found
+                </td>
               </tr>
             )}
           </tbody>
