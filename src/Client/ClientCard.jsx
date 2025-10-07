@@ -12,7 +12,6 @@ const ClientCard = () => {
   const [payments, setPayments] = useState([]);
   const [expenses, setExpenses] = useState([]);
 
-  // Utility functions
   const formatAmount = (amount) => {
     if (!amount) return "N/A";
     return `₹ ${new Intl.NumberFormat("en-IN").format(amount)}`;
@@ -27,7 +26,6 @@ const ClientCard = () => {
     });
   };
 
-  // Fetch client details
   useEffect(() => {
     const fetchClient = async () => {
       try {
@@ -51,7 +49,6 @@ const ClientCard = () => {
     fetchEmployees();
   }, [id]);
 
-  // Fetch payment and expense history
   useEffect(() => {
     if (!client) return;
 
@@ -121,7 +118,6 @@ const ClientCard = () => {
         .map(doc => deleteDoc(doc.ref));
 
       await Promise.all([...deletePaymentPromises, ...deleteExpensePromises]);
-
       await deleteDoc(doc(database, "ClientData", client.id));
 
       alert("Client deleted successfully!");
@@ -141,15 +137,15 @@ const ClientCard = () => {
             {client.name?.charAt(0).toUpperCase() || "C"}
           </div>
           <div className="flex flex-col gap-2">
-            <h1 className="text-3xl font-[500] text-white">{client.name}</h1>
-            <span className="px-4 py-1 rounded-full text-sm font-[500] text-white bg-purple-500">
+            <h1 className="text-3xl font-medium text-white">{client.name}</h1>
+            <span className="px-4 py-1 rounded-full text-sm font-medium text-white bg-purple-500">
               Client
             </span>
           </div>
         </div>
         <div className="flex gap-2">
           <button
-            className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-[500] shadow-lg hover:shadow-xl transition-all duration-300"
+            className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={() =>
               navigate("/addincome", { state: { clientId: client.id, clientName: client.name } })
             }
@@ -157,7 +153,7 @@ const ClientCard = () => {
             Add Payment
           </button>
           <button
-            className="px-6 py-2 rounded-lg bg-red-600 text-white font-[500] shadow-lg hover:shadow-xl transition-all duration-300"
+            className="px-6 py-2 rounded-lg bg-red-600 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={handleDeleteClient}
           >
             Delete Client
@@ -180,27 +176,27 @@ const ClientCard = () => {
             key={idx}
             className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 flex flex-col"
           >
-            <span className="text-gray-300 font-medium text-[14px] mb-1">
+            <span className="text-[#3080ff] font-medium text-[14px] mb-1 drop-shadow-sm">
               {field.label}
             </span>
-            <span className="text-white text-[15px] font-[500]">
+            <span className="text-white font-medium text-[15px]">
               {field.value || "N/A"}
             </span>
           </div>
         ))}
 
         <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 flex flex-col">
-          <span className="text-gray-300 font-medium text-[14px] mb-1">
+          <span className="text-[#3080ff] font-medium text-[14px] mb-1 drop-shadow-sm">
             Assigned Employees
           </span>
           {assignedEmployees.length > 0 ? (
             assignedEmployees.map((emp) => (
-              <span key={emp.id} className="text-white text-[15px] font-[500]">
+              <span key={emp.id} className="text-white font-medium text-[15px]">
                 {emp.name}
               </span>
             ))
           ) : (
-            <span className="text-white/60 text-[15px] font-[500]">
+            <span className="text-white/60 font-medium text-[15px]">
               No Employees Assigned
             </span>
           )}
@@ -208,16 +204,16 @@ const ClientCard = () => {
 
         {/* Payment Summary */}
         <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 flex flex-col gap-2">
-          <span className="text-gray-300 font-medium text-[14px] mb-1">
+          <span className="text-[#3080ff] font-medium text-[14px] mb-1 drop-shadow-sm">
             Payment Summary
           </span>
-          <span className="text-white text-[15px] font-[500]">
+          <span className="text-white font-medium text-[15px]">
             Total Payment: {formatAmount(totalPayment)}
           </span>
-          <span className="text-white text-[15px] font-[500]">
+          <span className="text-white font-medium text-[15px]">
             Paid Amount: {formatAmount(paidAmount)}
           </span>
-          <span className="text-white text-[15px] font-[500]">
+          <span className="text-white font-medium text-[15px]">
             Pending Amount: {formatAmount(pendingAmount)}
           </span>
         </div>
@@ -225,17 +221,17 @@ const ClientCard = () => {
 
       {/* Payment History */}
       <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all">
-        <span className="text-gray-300 font-medium text-[14px] mb-2">
+        <span className="text-[#00FF7F] font-semibold tracking-[0.75px] text-[14px] mb-2 drop-shadow-sm">
           Payment History
         </span>
         <div className="overflow-x-auto rounded-[12.5px] mt-[15px]">
           <table className="w-full border-collapse SmallFont">
             <thead>
               <tr className="bg-gradient-to-r from-green-400 to-green-600 text-white">
-                <th className="p-3 text-[13px] font-[500]">No</th>
-                <th className="p-3 text-[13px] font-[500]">Date</th>
-                <th className="p-3 text-[13px] font-[500]">Amount</th>
-                <th className="p-3 text-[13px] font-[500]">Description</th>
+                <th className="p-3 text-[13px] font-medium">No</th>
+                <th className="p-3 text-[13px] font-medium">Date</th>
+                <th className="p-3 text-[13px] font-medium">Amount</th>
+                <th className="p-3 text-[13px] font-medium">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -245,15 +241,15 @@ const ClientCard = () => {
                     key={payment.id}
                     className={index % 2 === 0 ? "bg-white/1" : "bg-white/3"}
                   >
-                    <td className="p-3 text-white text-[13px] text-center">{index + 1}</td>
-                    <td className="p-3 text-white text-[13px] text-center">{formatDate(payment.date)}</td>
-                    <td className="p-3 text-white text-[13px] text-center">{formatAmount(payment.amount)}</td>
-                    <td className="p-3 text-white text-[13px] text-center">{payment.description || "N/A"}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{index + 1}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{formatDate(payment.date)}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{formatAmount(payment.amount)}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{payment.description || "N/A"}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td className="p-3 text-center text-gray-400" colSpan="4">
+                  <td className="p-3 text-center text-gray-400 font-medium" colSpan="4">
                     No Payments Found
                   </td>
                 </tr>
@@ -265,17 +261,17 @@ const ClientCard = () => {
 
       {/* Expense History */}
       <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all mt-6">
-        <span className="text-gray-300 font-medium text-[14px] mb-2">
+        <span className="text-[#FF1A1A] font-semibold tracking-[0.75px] text-[14px] mb-2">
           Expense History
         </span>
         <div className="overflow-x-auto rounded-[12.5px] mt-[15px]">
           <table className="w-full border-collapse SmallFont">
             <thead>
               <tr className="bg-gradient-to-r from-red-500 to-red-700 text-white">
-                <th className="p-3 text-[13px] font-[500]">No</th>
-                <th className="p-3 text-[13px] font-[500]">Date</th>
-                <th className="p-3 text-[13px] font-[500]">Amount</th>
-                <th className="p-3 text-[13px] font-[500]">Description</th>
+                <th className="p-3 text-[13px] font-medium">No</th>
+                <th className="p-3 text-[13px] font-medium">Date</th>
+                <th className="p-3 text-[13px] font-medium">Amount</th>
+                <th className="p-3 text-[13px] font-medium">Description</th>
               </tr>
             </thead>
             <tbody>
@@ -285,15 +281,15 @@ const ClientCard = () => {
                     key={expense.id}
                     className={index % 2 === 0 ? "bg-white/1" : "bg-white/3"}
                   >
-                    <td className="p-3 text-white text-[13px] text-center">{index + 1}</td>
-                    <td className="p-3 text-white text-[13px] text-center">{formatDate(expense.date)}</td>
-                    <td className="p-3 text-white text-[13px] text-center">{formatAmount(expense.amount)}</td>
-                    <td className="p-3 text-white text-[13px] text-center">{expense.description || "N/A"}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{index + 1}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{formatDate(expense.date)}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{formatAmount(expense.amount)}</td>
+                    <td className="p-3 text-white font-medium text-[13px] text-center">{expense.description || "N/A"}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td className="p-3 text-center text-gray-400" colSpan="5">
+                  <td className="p-3 text-center text-gray-400 font-medium" colSpan="4">
                     No Expenses Found
                   </td>
                 </tr>
@@ -307,7 +303,7 @@ const ClientCard = () => {
       <div className="flex justify-end">
         <button
           onClick={() => navigate("/client")}
-          className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-[500]"
+          className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-medium"
         >
           Back
         </button>

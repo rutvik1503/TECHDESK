@@ -92,6 +92,9 @@ const IncomeDataShow = () => {
                 Date
               </th>
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
+                Description
+              </th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">
                 Action
               </th>
             </tr>
@@ -117,6 +120,9 @@ const IncomeDataShow = () => {
                   <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
                     {formatDate(inc.date)}
                   </td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">
+                    {inc.description || "N/A"}
+                  </td>
                   <td className="p-4 text-center flex justify-center gap-2">
                     <button
                       onClick={() => navigate(`/addincome/${inc.id}`)}
@@ -135,7 +141,7 @@ const IncomeDataShow = () => {
               ))
             ) : (
               <tr>
-                <td className="p-6 text-center text-gray-400" colSpan="5">
+                <td className="p-6 text-center text-gray-400" colSpan="6">
                   No Income Data Found
                 </td>
               </tr>

@@ -66,11 +66,11 @@ const EmployeeCard = () => {
   const departmentColor = (dept) => {
     switch (dept?.toLowerCase()) {
       case "web development":
-        return "bg-blue-500";
+        return "bg-gradient-to-r from-blue-400 to-blue-600";
       case "software development":
-        return "bg-green-500";
+        return "bg-gradient-to-r from-green-400 to-green-600";
       case "marketing":
-        return "bg-yellow-500";
+        return "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black";
       default:
         return "bg-gray-500";
     }
@@ -147,7 +147,7 @@ const EmployeeCard = () => {
 
       {/* Employee Details */}
       <div className="grid md:grid-cols-2 gap-6">
-        {[
+        {[ 
           { label: "Email", value: employee.email },
           { label: "Phone", value: employee.phone },
           { label: "Role", value: employee.role?.join(", ") },
@@ -155,14 +155,14 @@ const EmployeeCard = () => {
           { label: "Joining Date", value: formatDate(employee.dateOfJoin) },
         ].map((field, idx) => (
           <div key={idx} className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all flex flex-col">
-            <span className="text-gray-300 font-medium text-[14px] mb-1">{field.label}</span>
+            <span className="text-[#3080ff] font-medium text-[14px] mb-1 drop-shadow-sm">{field.label}</span>
             <span className="text-white text-[15px] font-[500]">{field.value || "N/A"}</span>
           </div>
         ))}
 
         {/* Assigned Clients */}
         <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all flex flex-col">
-          <span className="text-gray-300 font-medium text-[14px] mb-1">Assigned Clients</span>
+          <span className="text-[#3080ff] font-medium text-[14px] mb-1 drop-shadow-sm">Assigned Clients</span>
           {clients.length > 0 ? (
             clients.map((client) => (
               <span key={client.id} className="text-white text-[15px] font-[500]">{client.name}</span>
@@ -174,12 +174,12 @@ const EmployeeCard = () => {
       </div>
 
       {/* Expense History */}
-      <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all">
-        <span className="text-gray-300 font-medium text-[14px] mb-2">Expense History</span>
+      <div className="glass-card p-4 rounded-[15px] shadow-lg border border-white/10 hover:shadow-xl transition-all mt-4">
+        <span className="text-[#FF1A1A] font-semibold tracking-[0.75px] text-[14px] mb-2">Expense History</span>
         <div className="overflow-x-auto rounded-[12.5px] mt-[15px]">
           <table className="w-full border-collapse SmallFont">
             <thead>
-              <tr className="bg-red-500 text-white">
+              <tr className="bg-gradient-to-r from-red-500 to-red-700 text-white">
                 <th className="p-3 text-[13px] font-[500]">No</th>
                 <th className="p-3 text-[13px] font-[500]">Date</th>
                 <th className="p-3 text-[13px] font-[500]">Amount</th>
@@ -189,7 +189,7 @@ const EmployeeCard = () => {
             <tbody>
               {expenses.length > 0 ? (
                 expenses.map((expense, index) => (
-                  <tr key={expense.id} className={index % 2 === 0 ? "bg-white/5" : "bg-white/10"}>
+                  <tr key={expense.id} className={index % 2 === 0 ? "bg-white/1" : "bg-white/3"}>
                     <td className="p-3 text-white text-[13px] text-center">{index + 1}</td>
                     <td className="p-3 text-white text-[13px] text-center">{formatDate(expense.date)}</td>
                     <td className="p-3 text-white text-[13px] text-center">{expense.amount ? `₹ ${new Intl.NumberFormat("en-IN").format(expense.amount)}` : "₹ 0"}</td>
@@ -207,10 +207,10 @@ const EmployeeCard = () => {
       </div>
 
       {/* Back Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-4">
         <button
           onClick={() => navigate("/employee")}
-          className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-[500] shadow-lg hover:shadow-xl transition-all duration-300"
+          className="px-6 py-2 rounded-lg bg-gradient-to-r from-[#1966FF] to-[#00D4FF] text-white font-[500]"
         >
           Back
         </button>

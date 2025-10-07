@@ -7,7 +7,6 @@ const ExpenseDataShow = () => {
   const navigate = useNavigate();
   const [expenses, setExpenses] = useState([]);
 
-  // Utility functions
   const formatAmount = (amount) => {
     if (!amount) return "N/A";
     return `₹ ${new Intl.NumberFormat("en-IN").format(amount)}`;
@@ -83,6 +82,7 @@ const ExpenseDataShow = () => {
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Expense Name</th>
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Amount</th>
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Date</th>
+              <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Description</th>
               <th className="p-4 text-center text-[12.5px] tracking-[1px] uppercase font-[500]">Action</th>
             </tr>
           </thead>
@@ -99,6 +99,7 @@ const ExpenseDataShow = () => {
                   </td>
                   <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{formatAmount(exp.amount)}</td>
                   <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{formatDate(exp.date)}</td>
+                  <td className="p-4 text-center text-white/90 text-[12.5px] font-[400] tracking-[0.75px]">{exp.description || "N/A"}</td>
                   <td className="p-4 text-center flex justify-center gap-2">
                     <button
                       onClick={() => navigate(`/addexpense/${exp.id}`)}
@@ -117,7 +118,7 @@ const ExpenseDataShow = () => {
               ))
             ) : (
               <tr>
-                <td className="p-6 text-center text-gray-400" colSpan="5">No Expense Data Found</td>
+                <td className="p-6 text-center text-gray-400" colSpan="6">No Expense Data Found</td>
               </tr>
             )}
           </tbody>
