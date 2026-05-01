@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { collection, addDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useParams, useNavigate } from "react-router-dom";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const EmployeeDataAdd = () => {
   const services = {
@@ -51,6 +52,7 @@ const EmployeeDataAdd = () => {
         }
       } catch (error) {
         console.error("Error fetching employee:", error);
+        toast.error("Error fetching employee: " + error.message);
       }
     };
 
@@ -110,21 +112,21 @@ const EmployeeDataAdd = () => {
       if (id) {
         // Edit mode → update existing document
         await updateDoc(doc(database, "EmployeeData", id), employeeData);
-        alert("Employee updated successfully!");
+        toast.success("Employee updated successfully!");
       } else {
         // Add new employee
         const docRef = await addDoc(
           collection(database, "EmployeeData"),
           employeeData
         );
-        alert("Employee added successfully! ID: " + docRef.id);
+        toast.success("Employee added successfully!");
       }
 
       // Navigate back to employee list after save
       navigate("/employee");
     } catch (error) {
       console.error("Error saving employee:", error);
-      alert("Error saving employee details");
+      toast.error("Error saving employee: " + error.message);
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { collection, addDoc, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useNavigate, useParams } from "react-router-dom";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const ExpenseDataAdd = () => {
   const navigate = useNavigate();
@@ -21,12 +22,20 @@ const ExpenseDataAdd = () => {
   // Fetch clients & employees for dropdowns
   useEffect(() => {
     const fetchClients = async () => {
-      const snapshot = await getDocs(collection(database, "ClientData"));
-      setClients(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      try {
+        const snapshot = await getDocs(collection(database, "ClientData"));
+        setClients(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (err) {
+        toast.error("Error fetching clients: " + err.message);
+      }
     };
     const fetchEmployees = async () => {
-      const snapshot = await getDocs(collection(database, "EmployeeData"));
-      setEmployees(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      try {
+        const snapshot = await getDocs(collection(database, "EmployeeData"));
+        setEmployees(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (err) {
+        toast.error("Error fetching employees: " + err.message);
+      }
     };
     fetchClients();
     fetchEmployees();
@@ -51,6 +60,7 @@ const ExpenseDataAdd = () => {
         }
       } catch (err) {
         console.error("Error fetching expense:", err);
+        toast.error("Error fetching expense: " + err.message);
       }
     };
     fetchExpense();
@@ -100,15 +110,16 @@ const ExpenseDataAdd = () => {
       if (id) {
         // Update existing expense
         await updateDoc(doc(database, "ExpenseData", id), data);
-        alert("Expense updated successfully!");
+        toast.success("Expense updated successfully!");
       } else {
         // Add new expense
         await addDoc(collection(database, "ExpenseData"), data);
-        alert("Expense added successfully!");
+        toast.success("Expense added successfully!");
       }
       navigate("/expense");
     } catch (err) {
       console.error("Error saving expense:", err);
+      toast.error("Error saving expense: " + err.message);
     }
   };
 

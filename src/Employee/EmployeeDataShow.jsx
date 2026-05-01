@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const EmployeeDataShow = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ const EmployeeDataShow = () => {
         setEmployees(employeeList);
       } catch (error) {
         console.error("Error fetching employee data:", error);
+        toast.error("Error fetching employee data: " + error.message);
       }
     };
 

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 import {
   BarChart,
   Bar,
@@ -9,12 +11,12 @@ import {
   Cell,
 } from "recharts";
 
-import AdminImage from "/public/AdminImage.png";
-import RevenueImg from "/public/Icons/Revenue.png";
-import IncomeImg from "/public/Icons/IncomeImg.png";
-import ExpenseImg from "/public/Icons/Expense.png";
-import ProfitImg from "/public/Icons/Profit.png";
-import PendigImg from "/public/Icons/Pending.png";
+import AdminImage from "/AdminImage.png?url";
+import RevenueImg from "/Icons/Revenue.png?url";
+import IncomeImg from "/Icons/IncomeImg.png?url";
+import ExpenseImg from "/Icons/Expense.png?url";
+import ProfitImg from "/Icons/Profit.png?url";
+import PendigImg from "/Icons/Pending.png?url";
 
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "../Firebase/Firebase";
@@ -70,6 +72,7 @@ const App = () => {
         setTotalExpense(expenseTotal);
       } catch (error) {
         console.error("Error fetching data:", error);
+        toast.error("Error fetching data: " + error.message);
       }
     };
 
@@ -95,14 +98,36 @@ const App = () => {
     { name: "Income", amount: totalIncome, color: "#ebb102" },
     { name: "Expense", amount: totalExpense, color: "#f5313b" },
     { name: "Profit", amount: totalIncome - totalExpense, color: "#00ca51" },
-    { name: "Pending", amount: totalRevenue - totalIncome, color: "#f5349a" },
+    { name: "Pending", amount: Math.max(0, totalRevenue - totalIncome), color: "#f5349a" },
   ];
 
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100 }
+    }
+  };
+
   return (
-    <div className="grid grid-cols-3 gap-[15px] SmallFont">
+    <motion.div 
+      className="grid grid-cols-3 gap-[15px] SmallFont"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Cards */}
       {/* Admin Card */}
-      <div className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
+      <motion.div variants={itemVariants} className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
         <img
           src={AdminImage}
           alt="Admin"
@@ -116,10 +141,10 @@ const App = () => {
             Admin
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Total Revenue */}
-      <div className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
+      <motion.div variants={itemVariants} className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
         <img
           src={RevenueImg}
           alt="Revenue"
@@ -133,10 +158,10 @@ const App = () => {
             Total Revenue
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Total Profit */}
-      <div className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
+      <motion.div variants={itemVariants} className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
         <img
           src={ProfitImg}
           alt="Profit"
@@ -150,10 +175,10 @@ const App = () => {
             Total Profit
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Total Income */}
-      <div className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
+      <motion.div variants={itemVariants} className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
         <img
           src={IncomeImg}
           alt="Income"
@@ -167,10 +192,10 @@ const App = () => {
             Total Income
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Total Expense */}
-      <div className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
+      <motion.div variants={itemVariants} className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
         <img
           src={ExpenseImg}
           alt="Expense"
@@ -184,10 +209,10 @@ const App = () => {
             Total Expense
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Pending Amount */}
-      <div className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
+      <motion.div variants={itemVariants} className="glass-card w-full rounded-[15px] flex justify-start gap-[25px] items-center">
         <img
           src={PendigImg}
           alt="Pending"
@@ -195,16 +220,16 @@ const App = () => {
         />
         <div className="w-auto h-full flex flex-col gap-[7.5px] tems-start justify-center">
           <h1 className="capitalize SmallFont font-bold tracking-wider text-[25px] text-[#f5349a] drop-shadow-lg">
-            ₹ {formatINR(totalRevenue - totalIncome)}
+            ₹ {formatINR(Math.max(0, totalRevenue - totalIncome))}
           </h1>
           <div className="w-fit h-auto px-5 py-1.5 text-[12px] tracking-[1px] rounded-full text-sm font-[500] text-white bg-[#f5349a]">
             Pending Amount
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Graph (col-span-2) */}
-      <div className="h-[350px] flex items-center justify-center col-span-2 glass-card p-5 rounded-[15px]">
+      <motion.div variants={itemVariants} className="h-[350px] flex items-center justify-center col-span-2 glass-card p-5 rounded-[15px]">
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={graphData}
@@ -228,9 +253,9 @@ const App = () => {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
 
-      <div className="max-h-[350px] glass-card rounded-[15px] p-4 overflow-y-auto flex flex-col gap-[15px] client-notes">
+      <motion.div variants={itemVariants} className="max-h-[350px] glass-card rounded-[15px] p-4 overflow-y-auto flex flex-col gap-[15px] client-notes">
         <h2 className="capitalize SmallFont font-bold tracking-wider text-[22px] bg-clip-text text-transparent bg-gradient-to-r from-[#1966FF] to-[#00D4FF] drop-shadow-lg">
           Client Notes
         </h2>
@@ -253,8 +278,8 @@ const App = () => {
             <p className="text-gray-400">No client notes available.</p>
           )}
         </ul>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 

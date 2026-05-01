@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const IncomeDataShow = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const IncomeDataShow = () => {
         setIncomes(sortedList);
       } catch (error) {
         console.error("Error fetching income data:", error);
+        toast.error("Error fetching income data: " + error.message);
       }
     };
 
@@ -54,8 +56,10 @@ const IncomeDataShow = () => {
       try {
         await deleteDoc(doc(database, "IncomeData", id));
         setIncomes((prev) => prev.filter((item) => item.id !== id));
+        toast.success("Income deleted successfully!");
       } catch (error) {
         console.error("Error deleting income entry:", error);
+        toast.error("Error deleting income entry: " + error.message);
       }
     }
   };

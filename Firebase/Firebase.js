@@ -6,12 +6,13 @@ import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBqS7waEpMNgsg4g-6SR-3EJ7Dq_duVMOE",
-  authDomain: "fir-practice-41c9a.firebaseapp.com",
-  projectId: "fir-practice-41c9a",
-  storageBucket: "fir-practice-41c9a.firebasestorage.app",
-  messagingSenderId: "635840162995",
-  appId: "1:635840162995:web:0ddc09d59e54dd9b1b14c6"
+  apiKey: "AIzaSyCAEX38pjXaZFl8vG1dB5LBDKLnmNBb0_Q",
+  authDomain: "techdesk-df699.firebaseapp.com",
+  projectId: "techdesk-df699",
+  storageBucket: "techdesk-df699.firebasestorage.app",
+  messagingSenderId: "723846439625",
+  appId: "1:723846439625:web:e3f0b5450cdbd1b9882318",
+  measurementId: "G-1M9M6BMFHD"
 };
 
 // Initialize Firebase

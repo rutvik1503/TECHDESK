@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const ClientDataShow = () => {
   const navigate = useNavigate();
@@ -26,6 +27,7 @@ const ClientDataShow = () => {
         setClients(clientList);
       } catch (error) {
         console.error("Error fetching client data:", error);
+        toast.error("Error fetching client data: " + error.message);
       }
     };
 

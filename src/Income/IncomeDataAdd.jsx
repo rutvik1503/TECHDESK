@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const IncomeDataAdd = () => {
   const { id } = useParams();
@@ -30,6 +31,7 @@ const IncomeDataAdd = () => {
         setClients(clientSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       } catch (error) {
         console.error("Error fetching clients:", error);
+        toast.error("Error fetching clients: " + error.message);
       }
     };
     fetchClients();
@@ -59,6 +61,7 @@ const IncomeDataAdd = () => {
         }
       } catch (error) {
         console.error("Error fetching income:", error);
+        toast.error("Error fetching income: " + error.message);
       }
     };
 
@@ -104,15 +107,15 @@ const IncomeDataAdd = () => {
     try {
       if (id) {
         await updateDoc(doc(database, "IncomeData", id), incomeData);
-        alert("Income updated successfully!");
+        toast.success("Income updated successfully!");
       } else {
         const docRef = await addDoc(collection(database, "IncomeData"), incomeData);
-        alert("Income added successfully! ID: " + docRef.id);
+        toast.success("Income added successfully!");
       }
       navigate("/income");
     } catch (error) {
       console.error("Error saving income:", error);
-      alert("Error saving income");
+      toast.error("Error saving income: " + error.message);
     }
   };
 

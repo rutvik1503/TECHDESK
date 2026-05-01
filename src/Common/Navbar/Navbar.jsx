@@ -1,5 +1,5 @@
 import React from "react";
-import AdminImage from "/public/AdminImage.png";
+import AdminImage from "/AdminImage.png?url";
 import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {

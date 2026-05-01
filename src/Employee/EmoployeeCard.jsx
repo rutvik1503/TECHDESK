@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, collection, getDocs, deleteDoc, updateDoc } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const EmployeeCard = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const EmployeeCard = () => {
         if (docSnap.exists()) setEmployee({ id: docSnap.id, ...docSnap.data() });
       } catch (err) {
         console.error("Error fetching employee:", err);
+        toast.error("Error fetching employee details: " + err.message);
       }
     };
 
@@ -34,6 +36,7 @@ const EmployeeCard = () => {
         setClients(assignedClients);
       } catch (err) {
         console.error("Error fetching clients:", err);
+        toast.error("Error fetching assigned clients: " + err.message);
       }
     };
 
@@ -54,6 +57,7 @@ const EmployeeCard = () => {
         setExpenses(filteredExpenses);
       } catch (err) {
         console.error("Error fetching expenses:", err);
+        toast.error("Error fetching expenses: " + err.message);
       }
     };
     fetchExpenses();
@@ -104,11 +108,11 @@ const EmployeeCard = () => {
       await Promise.all([...deleteExpensePromises, ...updateClientsPromises]);
       await deleteDoc(doc(database, "EmployeeData", employee.id));
 
-      alert("Employee deleted successfully!");
+      toast.success("Employee deleted successfully!");
       navigate("/employee");
     } catch (err) {
       console.error("Error deleting employee:", err);
-      alert("Failed to delete employee. Please try again.");
+      toast.error("Failed to delete employee: " + err.message);
     }
   };
 

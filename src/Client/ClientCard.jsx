@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, collection, getDocs, deleteDoc } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const ClientCard = () => {
   const { id } = useParams();
@@ -33,6 +34,7 @@ const ClientCard = () => {
         if (docSnap.exists()) setClient({ id: docSnap.id, ...docSnap.data() });
       } catch (err) {
         console.error("Error fetching client:", err);
+        toast.error("Error fetching client details: " + err.message);
       }
     };
 
@@ -42,6 +44,7 @@ const ClientCard = () => {
         setEmployees(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       } catch (err) {
         console.error("Error fetching employees:", err);
+        toast.error("Error fetching employees: " + err.message);
       }
     };
 
@@ -62,6 +65,7 @@ const ClientCard = () => {
         setPayments(list);
       } catch (err) {
         console.error("Error fetching payments:", err);
+        toast.error("Error fetching payments: " + err.message);
       }
     };
 
@@ -75,6 +79,7 @@ const ClientCard = () => {
         setExpenses(list);
       } catch (err) {
         console.error("Error fetching expenses:", err);
+        toast.error("Error fetching expenses: " + err.message);
       }
     };
 
@@ -95,7 +100,7 @@ const ClientCard = () => {
 
   const totalPayment = client.totalPayment || 0;
   const paidAmount = payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
-  const pendingAmount = totalPayment - paidAmount;
+  const pendingAmount = Math.max(0, totalPayment - paidAmount);
 
   const handleDeleteClient = async () => {
     const confirmDelete = window.confirm(
@@ -120,11 +125,11 @@ const ClientCard = () => {
       await Promise.all([...deletePaymentPromises, ...deleteExpensePromises]);
       await deleteDoc(doc(database, "ClientData", client.id));
 
-      alert("Client deleted successfully!");
+      toast.success("Client deleted successfully!");
       navigate("/client");
     } catch (err) {
       console.error("Error deleting client:", err);
-      alert("Failed to delete client. Please try again.");
+      toast.error("Failed to delete client: " + err.message);
     }
   };
 

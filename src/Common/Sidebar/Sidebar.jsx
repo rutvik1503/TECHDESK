@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import HomeImg from "/public/Icons/Home.png";
-import HomeImgFilled from "/public/Icons/HomeFilled.png";
-import ClientImg from "/public/Icons/Client.png";
-import ClientImgFilled from "/public/Icons/ClientFilled.png";
-import EmployeeImg from "/public/Icons/Employee.png";
-import EmployeeImgFilled from "/public/Icons/EmployeeFilled.png";
-import ExpensesImg from "/public/Icons/Expenses.png";
-import ExpensesImgFilled from "/public/Icons/ExpensesFilled.png";
-import IncomeImg from "/public/Icons/Income.png";
-import IncomeImgFilled from "/public/Icons/IncomeFilled.png";
+import HomeImg from "/Icons/Home.png?url";
+import HomeImgFilled from "/Icons/HomeFilled.png?url";
+import ClientImg from "/Icons/Client.png?url";
+import ClientImgFilled from "/Icons/ClientFilled.png?url";
+import EmployeeImg from "/Icons/Employee.png?url";
+import EmployeeImgFilled from "/Icons/EmployeeFilled.png?url";
+import ExpensesImg from "/Icons/Expenses.png?url";
+import ExpensesImgFilled from "/Icons/ExpensesFilled.png?url";
+import IncomeImg from "/Icons/Income.png?url";
+import IncomeImgFilled from "/Icons/IncomeFilled.png?url";
 
 const Sidebar = () => {
   const [activeMenu, setActiveMenu] = useState("home");

@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { useParams, useNavigate } from "react-router-dom";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const ClientDataAdd = () => {
   const { id } = useParams();
@@ -54,6 +55,7 @@ const ClientDataAdd = () => {
         );
       } catch (err) {
         console.error("Error fetching employees:", err);
+        toast.error("Error fetching employees: " + err.message);
       }
     };
     fetchEmployees();
@@ -63,20 +65,24 @@ const ClientDataAdd = () => {
   useEffect(() => {
     if (!id) return;
     const fetchClient = async () => {
-      const docSnap = await getDoc(doc(database, "ClientData", id));
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        setClientName(data.name || "");
-        setClientEmail(data.email || "");
-        setClientPhone(data.phone || "");
-        setClientAddress(data.address || "");
-        setClientMainService(data.mainService || "");
-        setClientService(data.subServices || []);
-        setAssignedEmployee(data.assignedEmployees || []);
-        setClientNote(data.notes || "");
-        setClientTotalPayment(data.totalPayment || "");
-        setClientPaidAmount(data.paidAmount || "");
-        setClientDate(data.addedDate || new Date().toISOString().split("T")[0]);
+      try {
+        const docSnap = await getDoc(doc(database, "ClientData", id));
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setClientName(data.name || "");
+          setClientEmail(data.email || "");
+          setClientPhone(data.phone || "");
+          setClientAddress(data.address || "");
+          setClientMainService(data.mainService || "");
+          setClientService(data.subServices || []);
+          setAssignedEmployee(data.assignedEmployees || []);
+          setClientNote(data.notes || "");
+          setClientTotalPayment(data.totalPayment || "");
+          setClientPaidAmount(data.paidAmount || "");
+          setClientDate(data.addedDate || new Date().toISOString().split("T")[0]);
+        }
+      } catch (err) {
+        toast.error("Error fetching client details: " + err.message);
       }
     };
     fetchClient();
@@ -100,7 +106,7 @@ const ClientDataAdd = () => {
     const selectedDate = new Date(clientDate);
 
     if (selectedDate < minDate || selectedDate > maxDate) {
-      alert("Date must be between 01 Jan 2024 and today!");
+      toast.error("Date must be between 01 Jan 2024 and today!");
       return;
     }
 
@@ -111,7 +117,7 @@ const ClientDataAdd = () => {
       !clientMainService ||
       clientService.length === 0
     ) {
-      alert(
+      toast.error(
         "Please fill all required fields (Name, Email, Main Service, Sub Services)"
       );
       return;
@@ -153,11 +159,11 @@ const ClientDataAdd = () => {
         }
       }
 
-      alert(id ? "Client updated successfully!" : "Client added successfully!");
+      toast.success(id ? "Client updated successfully!" : "Client added successfully!");
       navigate("/client");
     } catch (err) {
       console.error(err);
-      alert("Failed to save client. Check console for details.");
+      toast.error("Failed to save client: " + err.message);
     }
   };
 

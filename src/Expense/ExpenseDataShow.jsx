@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { database } from "../../Firebase/Firebase";
+import toast from "react-hot-toast";
 
 const ExpenseDataShow = () => {
   const navigate = useNavigate();
@@ -42,6 +43,7 @@ const ExpenseDataShow = () => {
         setExpenses(sortedList);
       } catch (error) {
         console.error("Error fetching expense data:", error);
+        toast.error("Error fetching expense data: " + error.message);
       }
     };
 
@@ -53,8 +55,10 @@ const ExpenseDataShow = () => {
       try {
         await deleteDoc(doc(database, "ExpenseData", id));
         setExpenses((prev) => prev.filter((item) => item.id !== id));
+        toast.success("Expense deleted successfully!");
       } catch (error) {
         console.error("Error deleting expense entry:", error);
+        toast.error("Error deleting expense entry: " + error.message);
       }
     }
   };
